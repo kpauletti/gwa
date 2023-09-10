@@ -5,9 +5,32 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>GWA</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
         {{block "styles" .}} {{end}}
     </head>
     <body>
+        <div class="navbar bg-base-100">
+            <div class="navbar-start">
+                <a class="btn btn-ghost normal-case text-xl" href="/">GO Web App</a>
+            </div>
+            <div class="navbar-center hidden lg:flex">
+                <ul class="menu menu-horizontal px-1">
+                    <li><a href="/about">About</a></li>
+                    <li class="dropdown">
+                        <label tabindex="0">Rooms</label>
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><a href="/rooms/generals-quarters">General's Quarters</a></li>
+                            <li><a href="/rooms/majors-suite">Major's Suite</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="navbar-end">
+                <a class="btn">Button</a>
+            </div>
+        </div>
         {{block "content" .}} {{end}} {{block "js" .}} {{end}}
     </body>
 </html>

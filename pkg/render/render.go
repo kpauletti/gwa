@@ -3,11 +3,11 @@ package render
 import (
 	"bytes"
 	"html/template"
-	"log"
 	"net/http"
 	"path/filepath"
 
 	"github.com/kpauletti/gwa/pkg/config"
+	"github.com/kpauletti/gwa/pkg/models"
 )
 
 // template cache
@@ -19,8 +19,13 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+
+	return td
+}
+
 // renders a template from cache or file
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 
 	var tc = map[string]*template.Template{}
 
@@ -34,21 +39,24 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	t, ok := tc[tmpl]
 
 	if !ok {
-		log.Fatal("Could not get template from template cache")
+		app.ErrorLog.Fatal("Could not get template from template cache")
 	}
 
 	//execute it to a buffer first, just an extra step to ensure template is working
 	buf := new(bytes.Buffer)
-	err := t.Execute(buf, nil)
+
+	td = AddDefaultData(td)
+
+	err := t.Execute(buf, td)
 
 	if err != nil {
-		log.Println(err)
+		app.ErrorLog.Fatal(err)
 	}
 	//write it to the http response
 	_, err = buf.WriteTo(w)
 
 	if err != nil {
-		log.Println(err)
+		app.ErrorLog.Fatal(err)
 	}
 }
 

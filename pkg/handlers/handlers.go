@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/kpauletti/gwa/pkg/config"
+	"github.com/kpauletti/gwa/pkg/models"
 	"github.com/kpauletti/gwa/pkg/render"
 )
 
@@ -26,9 +27,19 @@ func NewHandlers(r *Repository) {
 }
 
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.html")
+	remoteIP := r.RemoteAddr
+	m.App.SessionManager.Put(r.Context(), "remote_ip", remoteIP)
+	render.RenderTemplate(w, "home.page.html", &models.TemplateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.html")
+
+	remoteIP := m.App.SessionManager.GetString(r.Context(), "remote_ip")
+
+	stringMap := map[string]string{}
+	stringMap["test"] = remoteIP + " is the remote IP"
+
+	render.RenderTemplate(w, "about.page.html", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
